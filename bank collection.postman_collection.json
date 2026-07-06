@@ -1,0 +1,728 @@
+{
+	"info": {
+		"_postman_id": "c55d5c90-ab21-4106-8ac5-e94cedffec25",
+		"name": "bank collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7117259"
+	},
+	"item": [
+		{
+			"name": "user_login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"Admin@123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST http://localhost:8081/api/auth/login \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"username\":\"admin\",\"password\":\"Admin@123\"}'"
+			},
+			"response": []
+		},
+		{
+			"name": "create_user",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"Sangam\",\r\n    \"password\": \"Sangam@123\",\r\n    \"email\": \"Sangam@gmail.com\",\r\n    \"fullName\": \"Sangam Raj\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/auth/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"auth",
+						"register"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST http://localhost:8081/api/auth/register \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"username\":\"johndoe\",\"password\":\"Passw0rd!\",\"email\":\"john@example.com\",\"fullName\":\"John Doe\"}'"
+			},
+			"response": []
+		},
+		{
+			"name": "get_user_ me",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW5qYXkiLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNzgzMzI1NzQ4LCJleHAiOjE3ODMzMjkzNDh9.qPfnY8Js4ePC-CCSTxuQPHozmQ9WanAanQrTmkjnIVw",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"Sangam\",\r\n    \"password\": \"Sangam@123\",\r\n    \"email\": \"Sangam@gmail.com\",\r\n    \"fullName\": \"Sangam Raj\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/users/me",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"users",
+						"me"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST http://localhost:8081/api/auth/register \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"username\":\"johndoe\",\"password\":\"Passw0rd!\",\"email\":\"john@example.com\",\"fullName\":\"John Doe\"}'"
+			},
+			"response": []
+		},
+		{
+			"name": "view_users_admin_only",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfQURNSU4iXSwiaWF0IjoxNzgzMzIxODQ4LCJleHAiOjE3ODMzMjU0NDh9.gTIVFVGePpfQ2fVFn1PKqikW6SVUIWouDHFDumD-qSg",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"users"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST http://localhost:8081/api/auth/register \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"username\":\"johndoe\",\"password\":\"Passw0rd!\",\"email\":\"john@example.com\",\"fullName\":\"John Doe\"}'"
+			},
+			"response": []
+		},
+		{
+			"name": "view_users_byId_admin_only",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfQURNSU4iXSwiaWF0IjoxNzgzMzIxODQ4LCJleHAiOjE3ODMzMjU0NDh9.gTIVFVGePpfQ2fVFn1PKqikW6SVUIWouDHFDumD-qSg",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"users"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST http://localhost:8081/api/auth/register \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"username\":\"johndoe\",\"password\":\"Passw0rd!\",\"email\":\"john@example.com\",\"fullName\":\"John Doe\"}'"
+			},
+			"response": []
+		},
+		{
+			"name": "view_transactionsByAccNo_admin_only",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfQURNSU4iXSwiaWF0IjoxNzgzMzIxODQ4LCJleHAiOjE3ODMzMjU0NDh9.gTIVFVGePpfQ2fVFn1PKqikW6SVUIWouDHFDumD-qSg",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"users"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST http://localhost:8081/api/auth/register \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"username\":\"johndoe\",\"password\":\"Passw0rd!\",\"email\":\"john@example.com\",\"fullName\":\"John Doe\"}'"
+			},
+			"response": []
+		},
+		{
+			"name": "asign_role_to_user_admin_only",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfQURNSU4iXSwiaWF0IjoxNzgzMzI2MTg0LCJleHAiOjE3ODMzMjk3ODR9.EsuXpf3xxdds82zjftw4WjPS3BH-iEMuYDSs1DfL-SI",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"roles\":[\"ROLE_ADMIN\",\"ROLE_USER\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/users/2/roles",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"users",
+						"2",
+						"roles"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST http://localhost:8081/api/auth/register \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"username\":\"johndoe\",\"password\":\"Passw0rd!\",\"email\":\"john@example.com\",\"fullName\":\"John Doe\"}'"
+			},
+			"response": []
+		},
+		{
+			"name": "enable_user_role_admin_only Copy",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfQURNSU4iXSwiaWF0IjoxNzgzMzI2MTg0LCJleHAiOjE3ODMzMjk3ODR9.EsuXpf3xxdds82zjftw4WjPS3BH-iEMuYDSs1DfL-SI",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/users/2/disable",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"users",
+						"2",
+						"disable"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST http://localhost:8081/api/auth/register \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"username\":\"johndoe\",\"password\":\"Passw0rd!\",\"email\":\"john@example.com\",\"fullName\":\"John Doe\"}'"
+			},
+			"response": []
+		},
+		{
+			"name": "desable_user_role_admin_only",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfQURNSU4iXSwiaWF0IjoxNzgzMzI2MTg0LCJleHAiOjE3ODMzMjk3ODR9.EsuXpf3xxdds82zjftw4WjPS3BH-iEMuYDSs1DfL-SI",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/users/2/disable",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"users",
+						"2",
+						"disable"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST http://localhost:8081/api/auth/register \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"username\":\"johndoe\",\"password\":\"Passw0rd!\",\"email\":\"john@example.com\",\"fullName\":\"John Doe\"}'"
+			},
+			"response": []
+		},
+		{
+			"name": "view_roles",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfQURNSU4iXSwiaWF0IjoxNzgzMzI2MTg0LCJleHAiOjE3ODMzMjk3ODR9.EsuXpf3xxdds82zjftw4WjPS3BH-iEMuYDSs1DfL-SI",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/roles",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"roles"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST http://localhost:8081/api/auth/register \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"username\":\"johndoe\",\"password\":\"Passw0rd!\",\"email\":\"john@example.com\",\"fullName\":\"John Doe\"}'"
+			},
+			"response": []
+		},
+		{
+			"name": "add_new_role_admin_only",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfQURNSU4iXSwiaWF0IjoxNzgzMzI2MTg0LCJleHAiOjE3ODMzMjk3ODR9.EsuXpf3xxdds82zjftw4WjPS3BH-iEMuYDSs1DfL-SI",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/roles",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"roles"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST http://localhost:8081/api/auth/register \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"username\":\"johndoe\",\"password\":\"Passw0rd!\",\"email\":\"john@example.com\",\"fullName\":\"John Doe\"}'"
+			},
+			"response": []
+		},
+		{
+			"name": "Create_Account",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW5qYXkiLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNzgzMzIzOTg1LCJleHAiOjE3ODMzMjc1ODV9.iyqare6vcOwiU2dbVjXoAcbGTA0iZDqpxTi2RIu7zdE"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"accountHolderName\":\"Sanjay Singh\",\"accountType\":\"Fixed Deposit\",\"initialDeposit\":1000}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/api/accounts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"accounts"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST http://localhost:8082/api/accounts \\\r\n  -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" \\\r\n  -d '{\"accountHolderName\":\"John Doe\",\"accountType\":\"SAVINGS\",\"initialDeposit\":1000}'\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "deposit_amount",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW5nYW0iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNzgzMzIxMTg5LCJleHAiOjE3ODMzMjQ3ODl9.029ZA0ykx_J30DT4fcmuxqJgEzcanDRFjC35_-afttE"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"amount\":10000}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/api/accounts/ABC9913980247/deposit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"accounts",
+						"ABC9913980247",
+						"deposit"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST http://localhost:8082/api/accounts/ABC0000000001/deposit \\\r\n  -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" \\\r\n  -d '{\"amount\":500}'"
+			},
+			"response": []
+		},
+		{
+			"name": "withdraw_amount",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW5nYW0iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNzgzMzIxMTg5LCJleHAiOjE3ODMzMjQ3ODl9.029ZA0ykx_J30DT4fcmuxqJgEzcanDRFjC35_-afttE"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"amount\":800}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/api/accounts/ABC9913980247/withdraw",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"accounts",
+						"ABC9913980247",
+						"withdraw"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST http://localhost:8082/api/accounts/ABC0000000001/withdraw \\\r\n  -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" \\\r\n  -d '{\"amount\":200}'"
+			},
+			"response": []
+		},
+		{
+			"name": "view_balance",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW5nYW0iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNzgzMzIxMTg5LCJleHAiOjE3ODMzMjQ3ODl9.029ZA0ykx_J30DT4fcmuxqJgEzcanDRFjC35_-afttE"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8082/api/accounts/ABC9913980247/balance",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"accounts",
+						"ABC9913980247",
+						"balance"
+					]
+				},
+				"description": "Generated from cURL: curl http://localhost:8082/api/accounts/ABC0000000001/balance \\\r\n  -H \"Authorization: Bearer $TOKEN\""
+			},
+			"response": []
+		},
+		{
+			"name": "view_my_accounts",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW5nYW0iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNzgzMzIxMTg5LCJleHAiOjE3ODMzMjQ3ODl9.029ZA0ykx_J30DT4fcmuxqJgEzcanDRFjC35_-afttE"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8082/api/accounts/my",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"accounts",
+						"my"
+					]
+				},
+				"description": "Generated from cURL: curl http://localhost:8082/api/accounts/ABC0000000001/balance \\\r\n  -H \"Authorization: Bearer $TOKEN\""
+			},
+			"response": []
+		},
+		{
+			"name": "view_all_accounts_Admin_only",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW5nYW0iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNzgzMzIxMTg5LCJleHAiOjE3ODMzMjQ3ODl9.029ZA0ykx_J30DT4fcmuxqJgEzcanDRFjC35_-afttE"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8082/api/accounts/my",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"accounts",
+						"my"
+					]
+				},
+				"description": "Generated from cURL: curl http://localhost:8082/api/accounts/ABC0000000001/balance \\\r\n  -H \"Authorization: Bearer $TOKEN\""
+			},
+			"response": []
+		},
+		{
+			"name": "view_accounts_by_accNo",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW5nYW0iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNzgzMzIxMTg5LCJleHAiOjE3ODMzMjQ3ODl9.029ZA0ykx_J30DT4fcmuxqJgEzcanDRFjC35_-afttE"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8082/api/accounts/ABC8981136217",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"accounts",
+						"ABC8981136217"
+					]
+				},
+				"description": "Generated from cURL: curl http://localhost:8082/api/accounts/ABC0000000001/balance \\\r\n  -H \"Authorization: Bearer $TOKEN\""
+			},
+			"response": []
+		},
+		{
+			"name": "update_accounts_by_accNo",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW5nYW0iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNzgzMzIxMTg5LCJleHAiOjE3ODMzMjQ3ODl9.029ZA0ykx_J30DT4fcmuxqJgEzcanDRFjC35_-afttE"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8082/api/accounts/ABC8981136217",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"accounts",
+						"ABC8981136217"
+					]
+				},
+				"description": "Generated from cURL: curl http://localhost:8082/api/accounts/ABC0000000001/balance \\\r\n  -H \"Authorization: Bearer $TOKEN\""
+			},
+			"response": []
+		}
+	]
+}

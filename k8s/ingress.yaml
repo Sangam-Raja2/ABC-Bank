@@ -1,0 +1,29 @@
+# Optional: exposes both services externally through a single ingress.
+# Requires an ingress controller (e.g. ingress-nginx) installed in the cluster.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: abcbank-ingress
+  namespace: abcbank
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: abcbank.local
+      http:
+        paths:
+          - path: /user-service(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: user-service
+                port:
+                  number: 8081
+          - path: /banking-service(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: banking-service
+                port:
+                  number: 8082

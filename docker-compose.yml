@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  user-service:
+    build:
+      context: .
+      dockerfile: user-service/Dockerfile
+    image: abcbank/user-service:1.0.0
+    container_name: abcbank-user-service
+    ports:
+      - "8081:8081"
+    environment:
+      JWT_SECRET: "abcBank$ecretKeyForJWTSigning_MustBeAtLeast256BitsLong_ChangeInProd"
+      JWT_EXPIRATION_MS: "3600000"
+    networks:
+      - abcbank-net
+
+  banking-service:
+    build:
+      context: .
+      dockerfile: banking-service/Dockerfile
+    image: abcbank/banking-service:1.0.0
+    container_name: abcbank-banking-service
+    ports:
+      - "8082:8082"
+    environment:
+      JWT_SECRET: "abcBank$ecretKeyForJWTSigning_MustBeAtLeast256BitsLong_ChangeInProd"
+      JWT_EXPIRATION_MS: "3600000"
+    depends_on:
+      - user-service
+    networks:
+      - abcbank-net
+
+networks:
+  abcbank-net:
+    driver: bridge
