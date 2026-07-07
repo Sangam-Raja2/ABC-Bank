@@ -21,7 +21,7 @@ public class AccountController {
 
     /** Create a new account. Owned by the currently authenticated user. */
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER')")
     public ResponseEntity<AccountResponse> createAccount(@Valid @RequestBody CreateAccountRequest request,
                                                           Authentication authentication) {
         AccountResponse response = accountService.createAccount(request, authentication);
@@ -30,7 +30,7 @@ public class AccountController {
 
     /** List accounts owned by the currently authenticated user. */
     @GetMapping("/my")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER')")
     public ResponseEntity<List<AccountResponse>> getMyAccounts(Authentication authentication) {
         return ResponseEntity.ok(accountService.getMyAccounts(authentication));
     }
@@ -43,14 +43,14 @@ public class AccountController {
     }
 
     @GetMapping("/{accountNumber}")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER')")
     public ResponseEntity<AccountResponse> getAccount(@PathVariable String accountNumber,
                                                        Authentication authentication) {
         return ResponseEntity.ok(accountService.getAccount(accountNumber, authentication));
     }
 
     @PutMapping("/{accountNumber}")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER')")
     public ResponseEntity<AccountResponse> updateAccount(@PathVariable String accountNumber,
                                                           @RequestBody UpdateAccountRequest request,
                                                           Authentication authentication) {
@@ -58,7 +58,7 @@ public class AccountController {
     }
 
     @PostMapping("/{accountNumber}/deposit")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER')")
     public ResponseEntity<AccountResponse> deposit(@PathVariable String accountNumber,
                                                     @Valid @RequestBody AmountRequest request,
                                                     Authentication authentication) {
@@ -66,7 +66,7 @@ public class AccountController {
     }
 
     @PostMapping("/{accountNumber}/withdraw")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER')")
     public ResponseEntity<AccountResponse> withdraw(@PathVariable String accountNumber,
                                                      @Valid @RequestBody AmountRequest request,
                                                      Authentication authentication) {
@@ -74,7 +74,7 @@ public class AccountController {
     }
 
     @GetMapping("/{accountNumber}/balance")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER')")
     public ResponseEntity<BalanceResponse> getBalance(@PathVariable String accountNumber,
                                                        Authentication authentication) {
         return ResponseEntity.ok(accountService.getBalance(accountNumber, authentication));

@@ -41,7 +41,7 @@ public class UserService {
 
         Set<Role> roles = new HashSet<>();
         if (request.getRoles() == null || request.getRoles().isEmpty()) {
-            roles.add(getOrCreateRole("ROLE_USER"));
+            roles.add(getOrCreateRole("ROLE_CUSTOMER"));
         } else {
             for (String r : request.getRoles()) {
                 String roleName = r.toUpperCase().startsWith("ROLE_") ? r.toUpperCase() : "ROLE_" + r.toUpperCase();

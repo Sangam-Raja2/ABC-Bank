@@ -1,0 +1,29 @@
+package com.sangam.abcbank.loanservice.dto;
+
+import lombok.Builder;
+import lombok.Data;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Data
+@Builder
+public class LoanResponse {
+
+    private Long loanId;
+
+
+    private String ownerUsername;
+
+    private BigDecimal loanAmount;
+
+    private Integer tenureInMonths;
+
+    private BigDecimal annualInterestRate;
+
+    private String loanPurpose;
+
+    private String status;
+
+    private LocalDateTime appliedDate;
+}

@@ -21,7 +21,7 @@ public class TransactionController {
     private final AccountService accountService;
 
     @GetMapping("/{accountNumber}")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER')")
     public ResponseEntity<List<TransactionResponse>> getHistory(@PathVariable String accountNumber,
                                                                  Authentication authentication) {
         return ResponseEntity.ok(accountService.getTransactionHistory(accountNumber, authentication));
