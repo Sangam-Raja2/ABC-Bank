@@ -9,16 +9,20 @@ A microservices-based banking application built with **Spring Boot 3 / Java 17**
 
 Two independent microservices, each with its own H2 database and deployable independently:
 
-| Service           | Port | Responsibility                                                             |
-|-------------------|------|-----------------------------------------------------------------------------|
-| `user-service`    | 8081 | User registration/login, role management, JWT issuance                     |
-| `banking-service` | 8082 | Account creation/update, cash deposit, cash withdrawal, balance enquiry     |
+| Service           | Port | Responsibility                                                          |
+|-------------------|------|-------------------------------------------------------------------------|
+| `user-service`    | 8081 | User registration/login, role management, JWT issuance                  |
+| `banking-service` | 8082 | Account creation/update, cash deposit, cash withdrawal, balance enquiry |
+| `Loan-service`    | 8083 | apply loan, approve loan, cash withdrawal, disburse Loan,deleteLoan     |
+
 
 Authentication flow:
 
 1. `user-service` authenticates credentials and issues a signed JWT containing the username and roles (`ROLE_ADMIN` / `ROLE_USER`).
 2. The client sends that JWT as a `Bearer` token to `banking-service`.
 3. `banking-service` independently validates the JWT signature using the **same shared secret** (`jwt.secret`) — no network call back to `user-service` is required (stateless JWT validation), which keeps the services independently scalable.
+4. `loan-service` independently validates the JWT signature using the **same shared secret** (`jwt.secret`) — no network call back to `user-service` is required (stateless JWT validation), which keeps the services independently scalable.
+
 
 ```
 Client -> POST /api/auth/login (user-service) -> JWT
@@ -27,8 +31,11 @@ Client -> Authorization: Bearer <JWT> -> banking-service APIs
 
 ## Roles
 
-- `ROLE_ADMIN` — manage users & roles, view all accounts across the bank.
-- `ROLE_USER` — create/manage their own accounts, deposit, withdraw, check balance.
+- `ADMIN` — manage users & roles, view all accounts across the bank.
+- `CUSTOMER` — create/manage their own accounts, deposit, withdraw, check balance, apply loans.
+- `LOAN_OFFICER` — reviews applied loans applied by customer.
+- `MANAGER` — disburse Loan applied by customer.
+
 
 A default admin is seeded on first startup of `user-service`:
 ```
@@ -41,72 +48,13 @@ password: Admin@123
 
 ### user-service (`localhost:8081`)
 
-| Method | Endpoint                  | Access          | Description                     |
-|--------|----------------------------|-----------------|----------------------------------|
-| POST   | `/api/auth/register`       | Public          | Register a new user (default ROLE_USER) |
-| POST   | `/api/auth/login`          | Public          | Authenticate, returns JWT        |
-| GET    | `/api/users`                | ADMIN           | List all users                   |
-| GET    | `/api/users/{id}`           | ADMIN           | Get user by id                   |
-| GET    | `/api/users/me`             | Authenticated   | Get current user's profile       |
-| PUT    | `/api/users/{id}/roles`     | ADMIN           | Assign roles to a user           |
-| PATCH  | `/api/users/{id}/enable`    | ADMIN           | Enable a user                    |
-| PATCH  | `/api/users/{id}/disable`   | ADMIN           | Disable a user                   |
-| GET    | `/api/roles`                 | Authenticated   | List roles                       |
-| POST   | `/api/roles`                 | ADMIN           | Create a new role                |
 
 ### banking-service (`localhost:8082`)
 
-| Method | Endpoint                                | Access        | Description                       |
-|--------|-------------------------------------------|---------------|-------------------------------------|
-| POST   | `/api/accounts`                            | USER/ADMIN    | Create a new account (owned by caller) |
-| GET    | `/api/accounts/my`                          | USER/ADMIN    | List caller's own accounts          |
-| GET    | `/api/accounts`                             | ADMIN         | List every account                  |
-| GET    | `/api/accounts/{accountNumber}`             | Owner/ADMIN   | Get account details                 |
-| PUT    | `/api/accounts/{accountNumber}`             | Owner/ADMIN   | Update account (holder name/type/status) |
-| POST   | `/api/accounts/{accountNumber}/deposit`     | Owner/ADMIN   | Cash deposit                        |
-| POST   | `/api/accounts/{accountNumber}/withdraw`    | Owner/ADMIN   | Cash withdrawal                     |
-| GET    | `/api/accounts/{accountNumber}/balance`     | Owner/ADMIN   | Balance enquiry                     |
-| GET    | `/api/transactions/{accountNumber}`         | Owner/ADMIN   | Transaction history                 |
 
-## Sample Usage
+### loan-service (`localhost:8083`)
 
-```bash
-# 1. Login as admin
-curl -X POST http://localhost:8081/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"Admin@123"}'
-# -> { "token": "<JWT>", ... }
 
-# 2. Register a regular user
-curl -X POST http://localhost:8081/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"username":"johndoe","password":"Passw0rd!","email":"john@example.com","fullName":"John Doe"}'
-
-# 3. Login as johndoe
-curl -X POST http://localhost:8081/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"johndoe","password":"Passw0rd!"}'
-# -> save token as $TOKEN
-
-# 4. Create an account
-curl -X POST http://localhost:8082/api/accounts \
-  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
-  -d '{"accountHolderName":"John Doe","accountType":"SAVINGS","initialDeposit":1000}'
-
-# 5. Deposit
-curl -X POST http://localhost:8082/api/accounts/ABC0000000001/deposit \
-  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
-  -d '{"amount":500}'
-
-# 6. Withdraw
-curl -X POST http://localhost:8082/api/accounts/ABC0000000001/withdraw \
-  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
-  -d '{"amount":200}'
-
-# 7. Balance enquiry
-curl http://localhost:8082/api/accounts/ABC0000000001/balance \
-  -H "Authorization: Bearer $TOKEN"
-```
 
 ## Running Locally (Maven)
 
@@ -119,11 +67,15 @@ cd user-service && mvn spring-boot:run
 
 # Run banking-service (in another terminal)
 cd banking-service && mvn spring-boot:run
+
+# Run loan-service (in another terminal)
+cd loan-service && mvn spring-boot:run
 ```
 
 H2 consoles:
 - user-service: http://localhost:8081/h2-console (JDBC URL: `jdbc:h2:mem:userdb`, user `sa`, pass `password`)
 - banking-service: http://localhost:8082/h2-console (JDBC URL: `jdbc:h2:mem:bankingdb`, user `sa`, pass `password`)
+- loan-service: http://localhost:8083/h2-console (JDBC URL: `jdbc:h2:mem:loandb`, user `sa`, pass `password`)
 
 ## Running with Docker Compose
 
@@ -139,6 +91,7 @@ Manifests live under `k8s/` (shared namespace + secret) and `<service>/k8s/` (pe
 # 1. Build & push images (adjust registry/tag as needed)
 docker build -f user-service/Dockerfile -t abcbank/user-service:1.0.0 .
 docker build -f banking-service/Dockerfile -t abcbank/banking-service:1.0.0 .
+docker build -f loan-service/Dockerfile -t abcbank/loan-service:1.0.0 .
 
 # 2. Install the metrics-server add-on (required for HPA CPU/memory metrics)
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
@@ -156,7 +109,12 @@ kubectl apply -f banking-service/k8s/deployment.yaml
 kubectl apply -f banking-service/k8s/service.yaml
 kubectl apply -f banking-service/k8s/hpa.yaml
 
-# 6. (Optional) expose both via a single ingress
+# 6. Deploy loan-service
+kubectl apply -f loan-service/k8s/deployment.yaml
+kubectl apply -f loan-service/k8s/service.yaml
+kubectl apply -f loan-service/k8s/hpa.yaml
+
+# 7. (Optional) expose both via a single ingress
 kubectl apply -f k8s/ingress.yaml
 
 # Check autoscaler status
