@@ -42,4 +42,8 @@ public class Loan {
     private String approvalRemarks;
 
     private LocalDateTime updatedDate;
+
+    private String disbursedByName;
+
+    private LocalDateTime disbursedDate;
 }

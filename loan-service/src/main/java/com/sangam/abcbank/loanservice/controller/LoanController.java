@@ -1,9 +1,8 @@
 package com.sangam.abcbank.loanservice.controller;
 
 import com.sangam.abcbank.loanservice.dto.LoanApprovalRequest;
-import com.sangam.abcbank.loanservice.dto.LoanApprovalResponse;
-import com.sangam.abcbank.loanservice.dto.LoanRequest;
 import com.sangam.abcbank.loanservice.dto.LoanResponse;
+import com.sangam.abcbank.loanservice.dto.LoanRequest;
 import com.sangam.abcbank.loanservice.service.LoanService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +33,7 @@ public class LoanController {
 
     @PreAuthorize("hasRole('LOAN_OFFICER')")
     @PutMapping("/{id}/approve")
-    public LoanApprovalResponse approveLoan(
+    public LoanResponse approveLoan(
             @PathVariable Long id,
             @Valid @RequestBody LoanApprovalRequest request,Authentication authentication) {
 
@@ -44,8 +43,9 @@ public class LoanController {
 
     @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/{id}/disburse")
-    public LoanResponse disburseLoan(){
-        return null;
+    public LoanResponse disburseLoan(@PathVariable Long id,Authentication authentication) {
+
+        return loanService.disburseLoan(id,authentication);
     }
 
     /** List accounts owned by the currently authenticated user. */

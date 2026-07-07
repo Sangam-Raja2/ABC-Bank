@@ -1,9 +1,8 @@
 package com.sangam.abcbank.loanservice.service;
 
 import com.sangam.abcbank.loanservice.dto.LoanApprovalRequest;
-import com.sangam.abcbank.loanservice.dto.LoanApprovalResponse;
-import com.sangam.abcbank.loanservice.dto.LoanRequest;
 import com.sangam.abcbank.loanservice.dto.LoanResponse;
+import com.sangam.abcbank.loanservice.dto.LoanRequest;
 import com.sangam.abcbank.loanservice.model.Loan;
 import com.sangam.abcbank.loanservice.model.LoanStatus;
 import com.sangam.abcbank.loanservice.repository.LoanRepository;
@@ -47,8 +46,8 @@ public class LoanService {
                 .build();
     }
 
-    public LoanApprovalResponse approveLoan(Long loanId,
-                                                     LoanApprovalRequest request, Authentication authentication) {
+    public LoanResponse approveLoan(Long loanId,
+                                    LoanApprovalRequest request, Authentication authentication) {
 
 
 
@@ -69,9 +68,9 @@ public class LoanService {
 
         Loan savedLoan = loanRepository.save(loan);
 
-        return LoanApprovalResponse.builder()
+        return LoanResponse.builder()
                 .loanId(savedLoan.getId())
-                .customerName(savedLoan.getOwnerUsername())
+                .ownerUsername(savedLoan.getOwnerUsername())
                 .loanAmount(savedLoan.getLoanAmount())
                 .tenureInMonths(savedLoan.getTenureInMonths())
                 .annualInterestRate(savedLoan.getAnnualInterestRate())
@@ -80,6 +79,43 @@ public class LoanService {
                 .approvedByName(authentication.getName())
                 .approvedDate(savedLoan.getApprovedDate())
                 .approvalRemarks(savedLoan.getApprovalRemarks())
+                .build();
+    }
+
+    public LoanResponse disburseLoan(Long loanId, Authentication authentication) {
+
+        Loan loan = loanRepository.findById(loanId)
+                .orElseThrow(() ->
+                        new RuntimeException("Loan not found with id : " + loanId));
+
+        // Loan must be approved first
+        if (loan.getStatus() != LoanStatus.APPROVED) {
+            throw new RuntimeException("Only approved loan can be disbursed.");
+        }
+
+        // Prevent duplicate disbursement
+        if (loan.getDisbursedDate() != null) {
+            throw new RuntimeException("Loan has already been disbursed.");
+        }
+
+        loan.setStatus(LoanStatus.DISBURSED);
+        loan.setDisbursedDate(LocalDateTime.now());
+
+        Loan savedLoan = loanRepository.save(loan);
+
+        return LoanResponse.builder()
+                .loanId(savedLoan.getId())
+                .ownerUsername(savedLoan.getOwnerUsername())
+                .loanAmount(savedLoan.getLoanAmount())
+                .tenureInMonths(savedLoan.getTenureInMonths())
+                .annualInterestRate(savedLoan.getAnnualInterestRate())
+                .loanPurpose(savedLoan.getLoanPurpose())
+                .status(savedLoan.getStatus().name())
+                .approvedByName(loan.getApprovedByName())
+                .approvedDate(savedLoan.getApprovedDate())
+                .approvalRemarks(savedLoan.getApprovalRemarks())
+                .disbursedByName(authentication.getName())
+                .disbursedDate(savedLoan.getDisbursedDate())
                 .build();
     }
 }

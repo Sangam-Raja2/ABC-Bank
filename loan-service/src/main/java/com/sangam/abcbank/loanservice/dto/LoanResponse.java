@@ -12,7 +12,6 @@ public class LoanResponse {
 
     private Long loanId;
 
-
     private String ownerUsername;
 
     private BigDecimal loanAmount;
@@ -26,4 +25,15 @@ public class LoanResponse {
     private String status;
 
     private LocalDateTime appliedDate;
+
+    private String approvedByName;
+
+    private LocalDateTime approvedDate;
+
+    private String approvalRemarks;
+
+    private String disbursedByName;
+
+    private LocalDateTime disbursedDate;
+
 }
