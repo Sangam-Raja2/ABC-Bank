@@ -5,8 +5,8 @@ metadata:
   labels:
     app.kubernetes.io/part-of: abcbank
 ---
-# Shared secret consumed by BOTH user-service and banking-service so that
-# JWTs issued at login (by user-service) can be validated by banking-service
+# Shared secret consumed by BOTH user-service, banking-service and loan-service so that
+# JWTs issued at login (by user-service) can be validated by banking-service and loan-service
 # without any inter-service network call.
 #
 # IMPORTANT: replace the base64 value below before deploying to any real

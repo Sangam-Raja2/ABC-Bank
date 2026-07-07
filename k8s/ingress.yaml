@@ -27,3 +27,10 @@ spec:
                 name: banking-service
                 port:
                   number: 8082
+          - path: /loan-service(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: loan-service
+                port:
+                  number: 8083
