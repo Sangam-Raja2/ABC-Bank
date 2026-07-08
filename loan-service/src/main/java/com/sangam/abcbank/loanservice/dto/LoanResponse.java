@@ -1,5 +1,6 @@
 package com.sangam.abcbank.loanservice.dto;
 
+import com.sangam.abcbank.loanservice.model.LoanStatus;
 import lombok.Builder;
 import lombok.Data;
 

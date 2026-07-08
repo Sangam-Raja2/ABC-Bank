@@ -1,22 +1,26 @@
 package com.sangam.abcbank.loanservice.service;
 
+import com.sangam.abcbank.loanservice.dto.AuditLogResponse;
 import com.sangam.abcbank.loanservice.dto.LoanApprovalRequest;
 import com.sangam.abcbank.loanservice.dto.LoanResponse;
 import com.sangam.abcbank.loanservice.dto.LoanRequest;
 import com.sangam.abcbank.loanservice.model.Loan;
 import com.sangam.abcbank.loanservice.model.LoanStatus;
+import com.sangam.abcbank.loanservice.repository.LoanAuditRepository;
 import com.sangam.abcbank.loanservice.repository.LoanRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class LoanService {
 
     private final LoanRepository loanRepository;
+    private final LoanAuditRepository loanAuditRepository;
 
     public LoanResponse applyLoan(LoanRequest request, Authentication authentication) {
 
@@ -117,5 +121,44 @@ public class LoanService {
                 .disbursedByName(authentication.getName())
                 .disbursedDate(savedLoan.getDisbursedDate())
                 .build();
+    }
+
+    public List<LoanResponse> getMyApplications(String ownerUsername) {
+
+        List<Loan> loans = loanRepository.findByOwnerUsername(ownerUsername);
+
+        return loans.stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    private LoanResponse mapToResponse(Loan loan) {
+
+        return LoanResponse.builder()
+                .ownerUsername(loan.getOwnerUsername())
+                .loanAmount(loan.getLoanAmount())
+                .loanPurpose(loan.getLoanPurpose())
+                .status(loan.getStatus().name())
+                .appliedDate(loan.getAppliedDate())
+                .approvedDate(loan.getApprovedDate())
+                .disbursedDate(loan.getDisbursedDate())
+                .build();
+    }
+
+
+    public List<AuditLogResponse> getAuditLogs() {
+
+        return loanAuditRepository.findAll()
+                .stream()
+                .map(audit -> AuditLogResponse.builder()
+                        .id(audit.getId())
+                        .loanId(audit.getLoanId())
+                        .action(audit.getAction())
+                        .performedBy(audit.getPerformedBy())
+                        .role(audit.getRole())
+                        .actionTime(audit.getActionTime())
+                        .remarks(audit.getRemarks())
+                        .build())
+                .toList();
     }
 }

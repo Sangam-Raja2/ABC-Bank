@@ -48,11 +48,15 @@ public class LoanController {
         return loanService.disburseLoan(id,authentication);
     }
 
-    /** List accounts owned by the currently authenticated user. */
+    /** List Loan accounts owned by the currently authenticated user. */
     @GetMapping("/my-applications")
-    @PreAuthorize("hasAnyRole('CUSTOMER')")
-    public ResponseEntity<List<LoanResponse>> getMyAccounts(Authentication authentication) {
-        return null;
-    }
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<List<LoanResponse>> getMyApplications(Authentication authentication) {
 
+        String userName = authentication.getName();
+
+        List<LoanResponse> response = loanService.getMyApplications(userName);
+
+        return ResponseEntity.ok(response);
+    }
 }

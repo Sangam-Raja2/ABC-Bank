@@ -1,7 +1,9 @@
 package com.sangam.abcbank.loanservice.controller;
 
 
+import com.sangam.abcbank.loanservice.dto.AuditLogResponse;
 import com.sangam.abcbank.loanservice.dto.LoanResponse;
+import com.sangam.abcbank.loanservice.service.LoanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,10 +20,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminController {
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    private final LoanService loanService;
+
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/audit-logs")
-    public ResponseEntity<List<LoanResponse>> getAuditLogs() {
-        return null;
+    public ResponseEntity<List<AuditLogResponse>> getAuditLogs() {
+
+        return ResponseEntity.ok(loanService.getAuditLogs());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
