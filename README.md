@@ -77,6 +77,12 @@ H2 consoles:
 - banking-service: http://localhost:8082/h2-console (JDBC URL: `jdbc:h2:mem:bankingdb`, user `sa`, pass `password`)
 - loan-service: http://localhost:8083/h2-console (JDBC URL: `jdbc:h2:mem:loandb`, user `sa`, pass `password`)
 
+Swagger UI:
+- user-service:http://localhost:8081/swagger-ui/index.html
+- banking-service:http://localhost:8082/swagger-ui/index.html
+- loan-service:http://localhost:8083/swagger-ui/index.html
+
+
 ## Running with Docker Compose
 
 ```bash
