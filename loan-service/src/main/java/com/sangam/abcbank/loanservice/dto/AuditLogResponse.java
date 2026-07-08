@@ -13,7 +13,7 @@ public class AuditLogResponse {
 
     private Long id;
 
-    private Long loanId;
+    private String loanAccountNumber;
 
     private String action;
 

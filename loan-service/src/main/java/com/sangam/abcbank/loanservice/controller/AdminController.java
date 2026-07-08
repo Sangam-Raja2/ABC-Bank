@@ -2,16 +2,12 @@ package com.sangam.abcbank.loanservice.controller;
 
 
 import com.sangam.abcbank.loanservice.dto.AuditLogResponse;
-import com.sangam.abcbank.loanservice.dto.LoanResponse;
 import com.sangam.abcbank.loanservice.service.LoanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,15 +19,19 @@ public class AdminController {
     private final LoanService loanService;
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/audit-logs")
-    public ResponseEntity<List<AuditLogResponse>> getAuditLogs() {
+    @GetMapping("/audit-logs/{loanAccountNumber}")
+    public ResponseEntity<List<AuditLogResponse>> getAuditLogs(@PathVariable String loanAccountNumber) {
 
-        return ResponseEntity.ok(loanService.getAuditLogs());
+        return ResponseEntity.ok(loanService.getAuditLogs(loanAccountNumber));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{id}")
-    public void deleteLoan(){
-
+    @DeleteMapping("/{loanAccountNumber}")
+    public ResponseEntity<Void> deleteLoan(@PathVariable String loanAccountNumber,Authentication authentication) {
+        boolean deleted = loanService.deleteLoan(loanAccountNumber, authentication);
+        if (!deleted) {
+            return ResponseEntity.notFound().build(); // 404 Not Found
+        }
+        return ResponseEntity.noContent().build(); // 204 No Content
     }
 }

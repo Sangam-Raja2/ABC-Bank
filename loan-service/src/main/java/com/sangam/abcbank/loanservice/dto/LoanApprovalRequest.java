@@ -7,5 +7,5 @@ import lombok.Data;
 public class LoanApprovalRequest {
 
     @NotBlank
-    private String approvalRemarks;
+    private String remarks;
 }

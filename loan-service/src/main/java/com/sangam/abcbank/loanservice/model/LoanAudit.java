@@ -18,7 +18,8 @@ public class LoanAudit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long loanId;
+    @Column(nullable = false, length = 20)
+    private String loanAccountNumber;
 
     private String action;
 

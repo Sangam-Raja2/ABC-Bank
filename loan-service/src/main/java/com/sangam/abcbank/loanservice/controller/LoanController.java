@@ -32,20 +32,38 @@ public class LoanController {
     }
 
     @PreAuthorize("hasRole('LOAN_OFFICER')")
-    @PutMapping("/{id}/approve")
-    public LoanResponse approveLoan(
-            @PathVariable Long id,
+    @PutMapping("/{loanAccountNumber}/review")
+    public LoanResponse reviewLoan(
+            @PathVariable String loanAccountNumber,
             @Valid @RequestBody LoanApprovalRequest request,Authentication authentication) {
 
-        return loanService.approveLoan(id, request,authentication);
+        return loanService.reviewLoan(loanAccountNumber, request,authentication);
+    }
+
+    @PreAuthorize("hasRole('LOAN_OFFICER')")
+    @PutMapping("/{loanAccountNumber}/approve")
+    public LoanResponse approveLoan(
+            @PathVariable String loanAccountNumber,
+            @Valid @RequestBody LoanApprovalRequest request,Authentication authentication) {
+
+        return loanService.approveLoan(loanAccountNumber, request,authentication);
+    }
+
+    @PreAuthorize("hasRole('LOAN_OFFICER')")
+    @PutMapping("/{loanAccountNumber}/reject")
+    public LoanResponse rejectLoan(
+            @PathVariable String loanAccountNumber,
+            @Valid @RequestBody LoanApprovalRequest request,Authentication authentication) {
+
+        return loanService.rejectLoan(loanAccountNumber, request,authentication);
     }
 
 
     @PreAuthorize("hasRole('MANAGER')")
-    @PutMapping("/{id}/disburse")
-    public LoanResponse disburseLoan(@PathVariable Long id,Authentication authentication) {
+    @PutMapping("/{loanAccountNumber}/disburse")
+    public LoanResponse disburseLoan(@PathVariable String loanAccountNumber,Authentication authentication) {
 
-        return loanService.disburseLoan(id,authentication);
+        return loanService.disburseLoan(loanAccountNumber,authentication);
     }
 
     /** List Loan accounts owned by the currently authenticated user. */

@@ -16,8 +16,8 @@ import java.time.LocalDateTime;
 public class Loan {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(nullable = false, unique = true, length = 20)
+    private String loanAccountNumber;
 
     private String ownerUsername;
 
@@ -34,16 +34,35 @@ public class Loan {
 
     private LocalDateTime appliedDate;
 
+    private String reviewedByName;
+
+    private String reviewersRole;
+
+    private LocalDateTime reviewedDate;
+
+    private String reviewalRemarks;
 
     private String approvedByName;
+
+    private String approversRole;
 
     private LocalDateTime approvedDate;
 
     private String approvalRemarks;
 
+    private String rejectedByName;
+
+    private String rejectorsRole;
+
+    private LocalDateTime rejectedDate;
+
+    private String rejectedRemarks;
+
     private LocalDateTime updatedDate;
 
     private String disbursedByName;
+
+    private String disbursedByRole;
 
     private LocalDateTime disbursedDate;
 }

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 public class LoanResponse {
 
-    private Long loanId;
+    private String loanAccountNumber;
 
     private String ownerUsername;
 
@@ -27,13 +27,33 @@ public class LoanResponse {
 
     private LocalDateTime appliedDate;
 
+    private String reviewedByName;
+
+    private String reviewersRole;
+
+    private LocalDateTime reviewedDate;
+
+    private String reviewalRemarks;
+
     private String approvedByName;
+
+    private String approversRole;
 
     private LocalDateTime approvedDate;
 
     private String approvalRemarks;
 
+    private String rejectedByName;
+
+    private String rejectorsRole;
+
+    private LocalDateTime rejectedDate;
+
+    private String rejectedRemarks;
+
     private String disbursedByName;
+
+    private String disbursedByRole;
 
     private LocalDateTime disbursedDate;
 
