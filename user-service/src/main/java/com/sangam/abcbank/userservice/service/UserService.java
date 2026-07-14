@@ -1,7 +1,7 @@
 package com.sangam.abcbank.userservice.service;
 
-import com.sangam.abcbank.userservice.config.JwtUtil;
-import com.sangam.abcbank.dto.CommonUser;
+import com.sangam.abcbank.common.config.JwtUtil;
+import com.sangam.abcbank.common.dto.CommonUser;
 import com.sangam.abcbank.userservice.dto.*;
 import com.sangam.abcbank.userservice.exception.DuplicateResourceException;
 import com.sangam.abcbank.userservice.exception.ResourceNotFoundException;
@@ -9,7 +9,7 @@ import com.sangam.abcbank.userservice.model.Role;
 import com.sangam.abcbank.userservice.model.User;
 import com.sangam.abcbank.userservice.repository.RoleRepository;
 import com.sangam.abcbank.userservice.repository.UserRepository;
-import com.sangam.abcbank.util.Utility;
+import com.sangam.abcbank.common.util.Utility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -76,9 +76,20 @@
         </dependency>
         <dependency>
             <groupId>com.sangam.abcbank</groupId>
-            <artifactId>common</artifactId>
+            <artifactId>common-security</artifactId>
             <version>1.0.0</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sangam.abcbank</groupId>
+            <artifactId>user-service</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sangam.abcbank</groupId>
+            <artifactId>common-security</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 

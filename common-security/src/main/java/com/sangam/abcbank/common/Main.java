@@ -1,4 +1,4 @@
-package com.sangam.abcbank;
+package com.sangam.abcbank.common;
 
 public class Main {
     public static void main(String[] args) {

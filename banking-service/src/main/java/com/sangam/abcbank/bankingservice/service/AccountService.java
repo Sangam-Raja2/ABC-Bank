@@ -8,11 +8,10 @@ import com.sangam.abcbank.bankingservice.model.Transaction;
 import com.sangam.abcbank.bankingservice.model.TransactionType;
 import com.sangam.abcbank.bankingservice.repository.AccountRepository;
 import com.sangam.abcbank.bankingservice.repository.TransactionRepository;
-import com.sangam.abcbank.dto.CommonUser;
-import com.sangam.abcbank.util.Utility;
+import com.sangam.abcbank.common.dto.CommonUser;
+import com.sangam.abcbank.common.util.Utility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

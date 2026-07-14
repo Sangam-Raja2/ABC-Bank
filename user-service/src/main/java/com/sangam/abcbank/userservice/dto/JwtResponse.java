@@ -1,6 +1,6 @@
 package com.sangam.abcbank.userservice.dto;
 
-import com.sangam.abcbank.dto.CommonUser;
+import com.sangam.abcbank.common.dto.CommonUser;
 import com.sangam.abcbank.userservice.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

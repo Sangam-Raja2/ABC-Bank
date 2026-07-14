@@ -1,6 +1,6 @@
-package com.sangam.abcbank.util;
+package com.sangam.abcbank.common.util;
 
-import com.sangam.abcbank.dto.CommonUser;
+import com.sangam.abcbank.common.dto.CommonUser;
 import org.springframework.security.core.Authentication;
 
 public class Utility {

@@ -1,4 +1,4 @@
-package com.sangam.abcbank.dto;
+package com.sangam.abcbank.common.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

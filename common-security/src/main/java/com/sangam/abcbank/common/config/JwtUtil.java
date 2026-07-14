@@ -1,6 +1,6 @@
-package com.sangam.abcbank.loanservice.config;
+package com.sangam.abcbank.common.config;
 
-import com.sangam.abcbank.dto.CommonUser;
+import com.sangam.abcbank.common.dto.CommonUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
