@@ -33,7 +33,7 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getCurrentUser(Authentication authentication) {
-        return ResponseEntity.ok(userService.getUserByUsername(authentication.getName()));
+        return ResponseEntity.ok(userService.getUserByUsername(authentication));
     }
 
     @PutMapping("/{id}/roles")

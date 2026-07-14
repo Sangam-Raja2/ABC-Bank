@@ -1,7 +1,9 @@
 package com.sangam.abcbank.loanservice.config;
 
+import com.sangam.abcbank.dto.CommonUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -12,20 +14,39 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Validates JWTs using the shared secret configured for this service.
- * This secret MUST match the one configured in user-service, since that is
- * where tokens are originally issued at login. No network call to
- * user-service is required to authenticate a request (stateless JWT).
- */
+
 @Component
 public class JwtUtil {
 
     @Value("${jwt.secret}")
     private String secret;
 
+    @Value("${jwt.expiration-ms}")
+    private long expirationMs;
+
     private SecretKey key() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public String generateToken(String username, CommonUser user) {
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + expirationMs);
+
+        return Jwts.builder()
+                .setSubject(username)
+                .claim("roles", user.getRoles())
+                .claim("id", user.getId())
+                .claim("userName", user.getUsername())
+                .claim("name", user.getName())
+                .claim("email", user.getEmail())
+                .setIssuedAt(now)
+                .setExpiration(expiry)
+                .signWith(key(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public long getExpirationMs() {
+        return expirationMs;
     }
 
     public String extractUsername(String token) {
@@ -57,4 +78,15 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+
+    public String extractName(String token) {
+        return parseClaims(token).get("name", String.class);
+    }
+
+    public String extractEmail(String token) {
+        return parseClaims(token).get("email", String.class);
+    }
+
+
 }

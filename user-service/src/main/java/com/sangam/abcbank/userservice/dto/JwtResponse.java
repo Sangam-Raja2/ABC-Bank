@@ -1,5 +1,7 @@
 package com.sangam.abcbank.userservice.dto;
 
+import com.sangam.abcbank.dto.CommonUser;
+import com.sangam.abcbank.userservice.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +17,7 @@ public class JwtResponse {
     private String token;
     @Builder.Default
     private String type = "Bearer";
-    private String username;
-    private Set<String> roles;
+    private CommonUser user;
+    private Set<Role> roles;
     private long expiresInMs;
 }

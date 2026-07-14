@@ -10,9 +10,6 @@ import java.math.BigDecimal;
 @Data
 public class CreateAccountRequest {
 
-    @NotBlank(message = "accountHolderName is required")
-    private String accountHolderName;
-
     @NotBlank(message = "accountType is required (SAVINGS or CURRENT)")
     private String accountType;
 

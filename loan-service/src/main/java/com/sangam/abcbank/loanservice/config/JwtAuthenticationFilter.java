@@ -1,5 +1,6 @@
 package com.sangam.abcbank.loanservice.config;
 
+import com.sangam.abcbank.dto.CommonUser;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,8 +25,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
-                                     @NonNull HttpServletResponse response,
-                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         String header = request.getHeader("Authorization");
 
@@ -34,19 +35,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 if (jwtUtil.isTokenValid(token)) {
                     String username = jwtUtil.extractUsername(token);
+                    String name = jwtUtil.extractName(token);       // assumes claim "name"
+                    String email = jwtUtil.extractEmail(token);     // assumes claim "email"
                     List<String> roles = jwtUtil.extractRoles(token);
+
+                    CommonUser commonUser = CommonUser.builder()
+                            .username(username)
+                            .name(name)
+                            .email(email)
+                            .roles(roles)
+                            .build();
 
                     var authorities = roles.stream()
                             .map(SimpleGrantedAuthority::new)
                             .collect(Collectors.toList());
 
-                    var authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
+                    // principal is now CommonUser, not just the username String
+                    var authentication = new UsernamePasswordAuthenticationToken(commonUser, null, authorities);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             } catch (Exception ex) {
                 SecurityContextHolder.clearContext();
             }
         }
+
 
         filterChain.doFilter(request, response);
     }

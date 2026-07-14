@@ -1,6 +1,7 @@
 package com.sangam.abcbank.userservice.service;
 
 import com.sangam.abcbank.userservice.config.JwtUtil;
+import com.sangam.abcbank.dto.CommonUser;
 import com.sangam.abcbank.userservice.dto.*;
 import com.sangam.abcbank.userservice.exception.DuplicateResourceException;
 import com.sangam.abcbank.userservice.exception.ResourceNotFoundException;
@@ -8,9 +9,11 @@ import com.sangam.abcbank.userservice.model.Role;
 import com.sangam.abcbank.userservice.model.User;
 import com.sangam.abcbank.userservice.repository.RoleRepository;
 import com.sangam.abcbank.userservice.repository.UserRepository;
+import com.sangam.abcbank.util.Utility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,14 +72,23 @@ public class UserService {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + request.getUsername()));
 
-        Set<String> roleNames = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
-        String token = jwtUtil.generateToken(user.getUsername(), roleNames);
+        CommonUser commonUser = mapToCommonUser(user);
+        String token = jwtUtil.generateToken(user.getUsername(), commonUser);
 
         return JwtResponse.builder()
                 .token(token)
-                .username(user.getUsername())
-                .roles(roleNames)
+                .user(commonUser)
+                .roles(user.getRoles())
                 .expiresInMs(jwtUtil.getExpirationMs())
+                .build();
+    }
+
+    private CommonUser mapToCommonUser(User user) {
+        return CommonUser.builder()
+                .username(user.getUsername())
+                .name(user.getFullName())
+                .email(user.getEmail())
+                .roles(user.getRoles().stream().map(Role::getName).collect(Collectors.toList()))
                 .build();
     }
 
@@ -90,9 +102,10 @@ public class UserService {
         return toResponse(user);
     }
 
-    public UserResponse getUserByUsername(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
+    public UserResponse getUserByUsername(Authentication authentication) {
+        CommonUser commonUser = Utility.getFromPrincipal(authentication);
+        User user = userRepository.findByUsername(commonUser.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + commonUser.getUsername()));
         return toResponse(user);
     }
 

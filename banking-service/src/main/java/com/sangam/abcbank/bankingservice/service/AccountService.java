@@ -8,6 +8,8 @@ import com.sangam.abcbank.bankingservice.model.Transaction;
 import com.sangam.abcbank.bankingservice.model.TransactionType;
 import com.sangam.abcbank.bankingservice.repository.AccountRepository;
 import com.sangam.abcbank.bankingservice.repository.TransactionRepository;
+import com.sangam.abcbank.dto.CommonUser;
+import com.sangam.abcbank.util.Utility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,11 +32,12 @@ public class AccountService {
     @Transactional
     public AccountResponse createAccount(CreateAccountRequest request, Authentication authentication) {
         String accountNumber = generateAccountNumber();
+        CommonUser commonUser = Utility.getFromPrincipal(authentication);
 
         Account account = Account.builder()
                 .accountNumber(accountNumber)
-                .ownerUsername(authentication.getName())
-                .accountHolderName(request.getAccountHolderName())
+                .ownerUsername(commonUser.getUsername())
+                .accountHolderName(commonUser.getName())
                 .accountType(request.getAccountType().toUpperCase())
                 .balance(request.getInitialDeposit())
                 .status(AccountStatus.ACTIVE)
@@ -57,7 +60,8 @@ public class AccountService {
     }
 
     public List<AccountResponse> getMyAccounts(Authentication authentication) {
-        return accountRepository.findByOwnerUsername(authentication.getName())
+        CommonUser principal =(CommonUser) authentication.getPrincipal();
+        return accountRepository.findByOwnerUsername(principal.getUsername())
                 .stream().map(this::toResponse).collect(Collectors.toList());
     }
 
@@ -149,6 +153,7 @@ public class AccountService {
                 .collect(Collectors.toList());
     }
 
+
     private void recordTransaction(String accountNumber, TransactionType type, BigDecimal amount,
                                     BigDecimal balanceAfter, String performedBy) {
         Transaction transaction = Transaction.builder()
@@ -177,8 +182,8 @@ public class AccountService {
      * Enforces that only the account owner or a user with ROLE_ADMIN may access/modify the account.
      */
     private void assertOwnerOrAdmin(Account account, Authentication authentication) {
-        boolean isAdmin = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
+        CommonUser principal =(CommonUser) authentication.getPrincipal();
+        boolean isAdmin = principal.getRoles().stream()
                 .anyMatch(a -> a.equals("ROLE_ADMIN"));
 
         if (!isAdmin && !account.getOwnerUsername().equals(authentication.getName())) {

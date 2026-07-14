@@ -1,5 +1,6 @@
 package com.sangam.abcbank.userservice.config;
 
+import com.sangam.abcbank.dto.CommonUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+
 @Component
 public class JwtUtil {
 
@@ -27,13 +29,17 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(String username, Set<String> roles) {
+    public String generateToken(String username, CommonUser user) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + expirationMs);
 
         return Jwts.builder()
                 .setSubject(username)
-                .claim("roles", roles)
+                .claim("roles", user.getRoles())
+                .claim("id", user.getId())
+                .claim("userName", user.getUsername())
+                .claim("name", user.getName())
+                .claim("email", user.getEmail())
                 .setIssuedAt(now)
                 .setExpiration(expiry)
                 .signWith(key(), SignatureAlgorithm.HS256)
@@ -73,4 +79,15 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+
+    public String extractName(String token) {
+        return parseClaims(token).get("name", String.class);
+    }
+
+    public String extractEmail(String token) {
+        return parseClaims(token).get("email", String.class);
+    }
+
+
 }

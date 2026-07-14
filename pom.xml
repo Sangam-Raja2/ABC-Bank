@@ -31,6 +31,7 @@
         <module>user-service</module>
         <module>banking-service</module>
         <module>loan-service</module>
+        <module>common</module>
     </modules>
 
     <dependencyManagement>
