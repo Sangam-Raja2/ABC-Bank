@@ -1,36 +1,23 @@
-# Optional: exposes both services externally through a single ingress.
-# Requires an ingress controller (e.g. ingress-nginx) installed in the cluster.
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: abcbank-ingress
-  namespace: abcbank
+  name: abc-bank-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   ingressClassName: nginx
   rules:
-    - host: abcbank.local
+    - host: abc-bank.example.com   # replace with your real domain
       http:
         paths:
-          - path: /user-service(/|$)(.*)
-            pathType: ImplementationSpecific
+          - path: /
+            pathType: Prefix
             backend:
               service:
-                name: user-service
+                name: abc-bank-service
                 port:
-                  number: 8081
-          - path: /banking-service(/|$)(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: banking-service
-                port:
-                  number: 8082
-          - path: /loan-service(/|$)(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: loan-service
-                port:
-                  number: 8083
+                  number: 80
+  tls:
+    - hosts:
+        - abc-bank.example.com
+      secretName: abc-bank-tls

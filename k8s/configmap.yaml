@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: abc-bank-config
+data:
+  SPRING_PROFILES_ACTIVE: "prod"
+  SERVER_PORT: "8080"
+  # Add other non-secret env-driven properties here, e.g.:
+  # DB_HOST: "postgres-service"
+  # DB_PORT: "5432"

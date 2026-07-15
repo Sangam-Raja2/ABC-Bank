@@ -14,43 +14,34 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private static final String AUTH_HEADER = "Authorization";
+    private static final String BEARER_PREFIX = "Bearer ";
+
     private final JwtUtil jwtUtil;
+    private final JwtUserMapper jwtUserMapper;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
-                                    @NonNull HttpServletResponse response,
-                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
+                                     @NonNull HttpServletResponse response,
+                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        String header = request.getHeader("Authorization");
+        String token = extractToken(request);
 
-        if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7);
+        if (token != null) {
             try {
                 if (jwtUtil.isTokenValid(token)) {
-                    String username = jwtUtil.extractUsername(token);
-                    String name = jwtUtil.extractName(token);       // assumes claim "name"
-                    String email = jwtUtil.extractEmail(token);     // assumes claim "email"
-                    List<String> roles = jwtUtil.extractRoles(token);
+                    CommonUser commonUser = jwtUserMapper.toCommonUser(token);
 
-                    CommonUser commonUser = CommonUser.builder()
-                            .username(username)
-                            .name(name)
-                            .email(email)
-                            .roles(roles)
-                            .build();
-
-                    var authorities = roles.stream()
+                    var authorities = commonUser.getRoles().stream()
                             .map(SimpleGrantedAuthority::new)
                             .collect(Collectors.toList());
 
-                    // principal is now CommonUser, not just the username String
                     var authentication = new UsernamePasswordAuthenticationToken(commonUser, null, authorities);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
@@ -59,7 +50,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-
         filterChain.doFilter(request, response);
+    }
+
+    private String extractToken(HttpServletRequest request) {
+        String header = request.getHeader(AUTH_HEADER);
+        if (header != null && header.startsWith(BEARER_PREFIX)) {
+            return header.substring(BEARER_PREFIX.length());
+        }
+        return null;
     }
 }

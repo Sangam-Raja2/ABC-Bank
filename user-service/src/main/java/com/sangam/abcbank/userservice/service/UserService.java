@@ -88,7 +88,7 @@ public class UserService {
                 .username(user.getUsername())
                 .name(user.getFullName())
                 .email(user.getEmail())
-                .roles(user.getRoles().stream().map(Role::getName).collect(Collectors.toList()))
+                .roles(user.getRoles().stream().map(Role::getName).collect(Collectors.toSet()))
                 .build();
     }
 
