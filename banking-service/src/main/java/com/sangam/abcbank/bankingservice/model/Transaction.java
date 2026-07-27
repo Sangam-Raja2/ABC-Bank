@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "transactions")
@@ -35,6 +37,8 @@ public class Transaction {
     private BigDecimal balanceAfter;
 
     private String performedBy;
+
+    private Set<String> roles;
 
     @Builder.Default
     @Column(nullable = false)

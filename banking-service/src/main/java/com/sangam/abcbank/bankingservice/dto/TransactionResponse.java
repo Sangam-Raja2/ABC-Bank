@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -19,5 +21,6 @@ public class TransactionResponse {
     private BigDecimal amount;
     private BigDecimal balanceAfter;
     private String performedBy;
+    private Set<String> role;
     private LocalDateTime timestamp;
 }

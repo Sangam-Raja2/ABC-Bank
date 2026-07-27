@@ -46,7 +46,7 @@ public class AccountService {
 
         if (request.getInitialDeposit().compareTo(BigDecimal.ZERO) > 0) {
             recordTransaction(saved.getAccountNumber(), TransactionType.DEPOSIT,
-                    request.getInitialDeposit(), saved.getBalance(), authentication.getName());
+                    request.getInitialDeposit(), saved.getBalance(), commonUser);
         }
 
         return toResponse(saved);
@@ -93,6 +93,7 @@ public class AccountService {
 
     @Transactional
     public AccountResponse deposit(String accountNumber, AmountRequest request, Authentication authentication) {
+        CommonUser commonUser = Utility.getFromPrincipal(authentication);
         Account account = findAccountOrThrow(accountNumber);
         assertOwnerOrAdmin(account, authentication);
         assertActive(account);
@@ -101,13 +102,14 @@ public class AccountService {
         Account saved = accountRepository.save(account);
 
         recordTransaction(accountNumber, TransactionType.DEPOSIT, request.getAmount(),
-                saved.getBalance(), authentication.getName());
+                saved.getBalance(), commonUser);
 
         return toResponse(saved);
     }
 
     @Transactional
     public AccountResponse withdraw(String accountNumber, AmountRequest request, Authentication authentication) {
+        CommonUser commonUser = Utility.getFromPrincipal(authentication);
         Account account = findAccountOrThrow(accountNumber);
         assertOwnerOrAdmin(account, authentication);
         assertActive(account);
@@ -121,7 +123,7 @@ public class AccountService {
         Account saved = accountRepository.save(account);
 
         recordTransaction(accountNumber, TransactionType.WITHDRAWAL, request.getAmount(),
-                saved.getBalance(), authentication.getName());
+                saved.getBalance(), commonUser);
 
         return toResponse(saved);
     }
@@ -147,6 +149,7 @@ public class AccountService {
                         .amount(t.getAmount())
                         .balanceAfter(t.getBalanceAfter())
                         .performedBy(t.getPerformedBy())
+                        .role(t.getRoles())
                         .timestamp(t.getTimestamp())
                         .build())
                 .collect(Collectors.toList());
@@ -154,13 +157,14 @@ public class AccountService {
 
 
     private void recordTransaction(String accountNumber, TransactionType type, BigDecimal amount,
-                                    BigDecimal balanceAfter, String performedBy) {
+                                    BigDecimal balanceAfter, CommonUser commonUser) {
         Transaction transaction = Transaction.builder()
                 .accountNumber(accountNumber)
                 .type(type)
                 .amount(amount)
                 .balanceAfter(balanceAfter)
-                .performedBy(performedBy)
+                .performedBy(commonUser.getUsername())
+                .roles(commonUser.getRoles())
                 .build();
         transactionRepository.save(transaction);
     }
@@ -182,10 +186,10 @@ public class AccountService {
      */
     private void assertOwnerOrAdmin(Account account, Authentication authentication) {
         CommonUser principal =(CommonUser) authentication.getPrincipal();
-        boolean isAdmin = principal.getRoles().stream()
-                .anyMatch(a -> a.equals("ROLE_ADMIN"));
+        boolean isValidUser = principal.getRoles().stream()
+                .anyMatch(a -> a.equals("ROLE_ADMIN")||a.equals("ROLE_CUSTOMER"));
 
-        if (!isAdmin && !account.getOwnerUsername().equals(authentication.getName())) {
+        if (!isValidUser && !account.getOwnerUsername().equals(principal.getUsername())) {
             throw new AccessDeniedForAccountException("You do not have access to account " + account.getAccountNumber());
         }
     }

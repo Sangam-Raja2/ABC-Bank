@@ -40,6 +40,7 @@ CREATE TABLE transactions (
     type VARCHAR(50) NOT NULL,
     amount NUMERIC(19,2) NOT NULL,
     balance_after NUMERIC(19,2) NOT NULL,
+    role TEXT[];
     performed_by VARCHAR(255),
     timestamp TIMESTAMP NOT NULL
 );
