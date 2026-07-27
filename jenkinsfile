@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Pulling the latest code from GitHub...'
+                checkout scm
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                echo 'Compiling the application...'
+                // Example for Node.js: sh 'npm install'
+                // Example for Java/Maven: sh 'mvn clean package'
+                sh 'echo "Build step completed successfully"'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running automated test suites...'
+                // Example: sh 'npm test' or 'mvn test'
+                sh 'echo "Tests passed!"'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying application to server...'
+                // Add deployment scripts or docker commands here
+                sh 'echo "Deployment complete!"'
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Check build logs.'
+        }
+    }
+}
