@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "loan")
@@ -36,33 +37,36 @@ public class Loan {
 
     private String reviewedByName;
 
-    private String reviewersRole;
+    private Set<String> reviewersRole;
 
     private LocalDateTime reviewedDate;
 
+    @Column(columnDefinition = "TEXT")
     private String reviewalRemarks;
 
     private String approvedByName;
 
-    private String approversRole;
+    private Set<String> approversRole;
 
     private LocalDateTime approvedDate;
 
+    @Column(columnDefinition = "TEXT")
     private String approvalRemarks;
 
     private String rejectedByName;
 
-    private String rejectorsRole;
+    private Set<String> rejectorsRole;
 
     private LocalDateTime rejectedDate;
 
+    @Column(columnDefinition = "TEXT")
     private String rejectedRemarks;
 
     private LocalDateTime updatedDate;
 
     private String disbursedByName;
 
-    private String disbursedByRole;
+    private Set<String> disbursedByRole;
 
     private LocalDateTime disbursedDate;
 }

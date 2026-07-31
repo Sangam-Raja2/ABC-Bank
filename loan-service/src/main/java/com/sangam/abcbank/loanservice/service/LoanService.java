@@ -1,5 +1,7 @@
 package com.sangam.abcbank.loanservice.service;
 
+import com.sangam.abcbank.common.dto.CommonUser;
+import com.sangam.abcbank.common.util.Utility;
 import com.sangam.abcbank.loanservice.dto.AuditLogResponse;
 import com.sangam.abcbank.loanservice.dto.LoanApprovalRequest;
 import com.sangam.abcbank.loanservice.dto.LoanResponse;
@@ -30,10 +32,10 @@ public class LoanService {
 
     public LoanResponse applyLoan(LoanRequest request, Authentication authentication) {
 
-
+        CommonUser commonUser = Utility.getFromPrincipal(authentication);
         Loan loan = Loan.builder()
                 .loanAccountNumber(generateAccountNumber())
-                .ownerUsername(authentication.getName())
+                .ownerUsername(commonUser.getUsername())
                 .loanAmount(request.getLoanAmount())
                 .tenureInMonths(request.getTenureInMonths())
                 .annualInterestRate(request.getAnnualInterestRate())
@@ -61,14 +63,11 @@ public class LoanService {
     public LoanResponse reviewLoan(String loanAccountNumber, LoanApprovalRequest request,
                                    Authentication authentication) {
         Loan loan = validateLoan(loanAccountNumber);
+        CommonUser commonUser = Utility.getFromPrincipal(authentication);
 
         loan.setStatus(LoanStatus.UNDER_REVIEW);
-        loan.setReviewedByName(authentication.getName());
-        loan.setReviewersRole(authentication.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .findFirst()
-                .orElse("ROLE_UNKNOWN"));
+        loan.setReviewedByName(commonUser.getName());
+        loan.setReviewersRole(commonUser.getRoles());
         loan.setReviewedDate(LocalDateTime.now());
         loan.setReviewalRemarks(request.getRemarks());
         loan.setUpdatedDate(LocalDateTime.now());
@@ -81,15 +80,12 @@ public class LoanService {
 
     public LoanResponse approveLoan(String loanAccountNumber,
                                     LoanApprovalRequest request, Authentication authentication) {
+        CommonUser commonUser = Utility.getFromPrincipal(authentication);
         Loan loan = validateLoan(loanAccountNumber);
 
         loan.setStatus(LoanStatus.APPROVED);
-        loan.setApprovedByName(authentication.getName());
-        loan.setApproversRole(authentication.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .findFirst()
-                .orElse("ROLE_UNKNOWN"));
+        loan.setApprovedByName(commonUser.getName());
+        loan.setApproversRole(commonUser.getRoles());
         loan.setApprovedDate(LocalDateTime.now());
         loan.setApprovalRemarks(request.getRemarks());
         loan.setUpdatedDate(LocalDateTime.now());
@@ -102,16 +98,13 @@ public class LoanService {
 
     public LoanResponse rejectLoan(String loanAccountNumber, LoanApprovalRequest request,
                                    Authentication authentication) {
+        CommonUser commonUser = Utility.getFromPrincipal(authentication);
         Loan loan = validateLoan(loanAccountNumber);
 
         loan.setStatus(LoanStatus.REJECTED);
-        loan.setRejectedByName(authentication.getName());
+        loan.setRejectedByName(commonUser.getName());
         loan.setRejectedDate(LocalDateTime.now());
-        loan.setRejectorsRole(authentication.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .findFirst()
-                .orElse("ROLE_UNKNOWN"));
+        loan.setRejectorsRole(commonUser.getRoles());
         loan.setRejectedRemarks(request.getRemarks());
         loan.setUpdatedDate(LocalDateTime.now());
 
@@ -122,6 +115,7 @@ public class LoanService {
     }
 
     public LoanResponse disburseLoan(String loanAccountNumber, Authentication authentication) {
+        CommonUser commonUser = Utility.getFromPrincipal(authentication);
 
         Loan loan = loanRepository.findById(loanAccountNumber)
                 .orElseThrow(() ->
@@ -138,13 +132,9 @@ public class LoanService {
         }
 
         loan.setStatus(LoanStatus.DISBURSED);
-        loan.setDisbursedByName(authentication.getName());
+        loan.setDisbursedByName(commonUser.getName());
         loan.setDisbursedDate(LocalDateTime.now());
-        loan.setDisbursedByRole(authentication.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .findFirst()
-                .orElse("ROLE_UNKNOWN"));
+        loan.setDisbursedByRole(commonUser.getRoles());
         Loan savedLoan = loanRepository.save(loan);
         saveAuditLog(savedLoan, "DISBURSED", authentication, "Loan disbursed.");
 
@@ -199,7 +189,7 @@ public class LoanService {
                         .loanAccountNumber(audit.getLoanAccountNumber())
                         .action(audit.getAction())
                         .performedBy(audit.getPerformedBy())
-                        .role(audit.getRole())
+                        .role(audit.getRoles())
                         .actionTime(audit.getActionTime())
                         .remarks(audit.getRemarks())
                         .build())
@@ -212,17 +202,13 @@ public class LoanService {
                               Authentication authentication,
                               String remarks) {
 
-        String role = authentication.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .findFirst()
-                .orElse("ROLE_UNKNOWN");
+        CommonUser commonUser = Utility.getFromPrincipal(authentication);
 
         LoanAudit audit = LoanAudit.builder()
                 .loanAccountNumber(loan.getLoanAccountNumber())
                 .action(action)
-                .performedBy(authentication.getName())
-                .role(role)
+                .performedBy(commonUser.getName())
+                .roles(commonUser.getRoles())
                 .actionTime(LocalDateTime.now())
                 .remarks(remarks)
                 .build();
@@ -232,7 +218,7 @@ public class LoanService {
                 .loanAccountNumber(audit.getLoanAccountNumber())
                 .action(audit.getAction())
                 .performedBy(audit.getPerformedBy())
-                .role(audit.getRole())
+                .role(audit.getRoles())
                 .actionTime(audit.getActionTime())
                 .remarks(audit.getRemarks())
                 .build();

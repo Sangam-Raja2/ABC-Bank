@@ -3,6 +3,7 @@ package com.sangam.abcbank.loanservice.dto;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -19,7 +20,7 @@ public class AuditLogResponse {
 
     private String performedBy;
 
-    private String role;
+    private Set<String> role;
 
     private LocalDateTime actionTime;
 

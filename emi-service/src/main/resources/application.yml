@@ -1,0 +1,76 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: emi-service
+
+  datasource:
+    url: jdbc:h2:mem:emidb   # swap to mysql: jdbc:mysql://localhost:3306/emi_db
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  # ---- JWT resource server config ----
+  # Point this at the SAME auth server / secret that user-service issues tokens from,
+  # so tokens minted by user-service are accepted here too.
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081/  # ADJUST: user-service's auth/issuer URL
+          # OR, if user-service uses a simple shared HMAC secret instead of issuer discovery:
+          # jwk-set-uri: http://localhost:8081/.well-known/jwks.json
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+
+# ---- Downstream service base URLs (used if NOT resolving via Eureka logical names) ----
+services:
+  loan-service:
+    name: loan-service          # Eureka service id used by Feign's @FeignClient(name=...)
+    url: http://localhost:8083  # fallback / direct URL, ADJUST to actual loan-service port
+  banking-service:
+    name: banking-service
+    url: http://localhost:8082  # ADJUST to actual banking-service port
+
+# ---- EMI auto-debit scheduler ----
+emi:
+  auto-payment:
+    enabled: true
+    cron: "0 0 2 * * *"   # runs daily at 02:00 AM - checks all due EMIs and auto-pays if balance allows
+    retry:
+      max-attempts: 3
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+  circuitbreaker:
+    enabled: true
+
+logging:
+  level:
+    com.abcbank.emiservice: DEBUG
+    org.springframework.cloud.openfeign: DEBUG

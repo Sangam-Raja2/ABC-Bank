@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Data
 @Builder
@@ -29,7 +30,7 @@ public class LoanResponse {
 
     private String reviewedByName;
 
-    private String reviewersRole;
+    private Set<String> reviewersRole;
 
     private LocalDateTime reviewedDate;
 
@@ -37,7 +38,7 @@ public class LoanResponse {
 
     private String approvedByName;
 
-    private String approversRole;
+    private Set<String> approversRole;
 
     private LocalDateTime approvedDate;
 
@@ -45,7 +46,7 @@ public class LoanResponse {
 
     private String rejectedByName;
 
-    private String rejectorsRole;
+    private Set<String> rejectorsRole;
 
     private LocalDateTime rejectedDate;
 
@@ -53,7 +54,7 @@ public class LoanResponse {
 
     private String disbursedByName;
 
-    private String disbursedByRole;
+    private Set<String> disbursedByRole;
 
     private LocalDateTime disbursedDate;
 

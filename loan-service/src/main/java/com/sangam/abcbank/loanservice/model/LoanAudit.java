@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "loan_audit_logs")
@@ -25,7 +26,7 @@ public class LoanAudit {
 
     private String performedBy;
 
-    private String role;
+    private Set<String> roles;
 
     private LocalDateTime actionTime;
 

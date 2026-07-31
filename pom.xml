@@ -23,8 +23,9 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jjwt.version>0.11.5</jjwt.version>
+        <spring-cloud.version>2023.0.1</spring-cloud.version>
         <springdoc.version>2.5.0</springdoc.version>
+        <jjwt.version>0.11.5</jjwt.version>
     </properties>
 
     <modules>
@@ -32,6 +33,7 @@
         <module>banking-service</module>
         <module>loan-service</module>
         <module>common-security</module>
+        <module>emi-service</module>
     </modules>
 
     <dependencyManagement>
@@ -55,6 +57,13 @@
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
                 <version>${springdoc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
