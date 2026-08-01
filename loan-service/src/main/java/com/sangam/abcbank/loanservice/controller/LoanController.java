@@ -3,7 +3,9 @@ package com.sangam.abcbank.loanservice.controller;
 import com.sangam.abcbank.loanservice.dto.LoanApprovalRequest;
 import com.sangam.abcbank.loanservice.dto.LoanResponse;
 import com.sangam.abcbank.loanservice.dto.LoanRequest;
+import com.sangam.abcbank.loanservice.service.CibilScoreService;
 import com.sangam.abcbank.loanservice.service.LoanService;
+import com.sangam.abcbank.loanservice.dto.CibilScoreResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,7 @@ public class LoanController {
 
     /** apply for loan. Owned by the currently authenticated user. */
     private final LoanService loanService;
+    private final CibilScoreService cibilScoreService;
 
     @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping
@@ -70,11 +73,14 @@ public class LoanController {
     @GetMapping("/my-applications")
     @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<List<LoanResponse>> getMyApplications(Authentication authentication) {
-
         String userName = authentication.getName();
-
         List<LoanResponse> response = loanService.getMyApplications(userName);
+        return ResponseEntity.ok(response);
+    }
 
+    @GetMapping("/{username}")
+    public ResponseEntity<CibilScoreResponse> getCibilScore(@PathVariable String username) {
+        CibilScoreResponse response = cibilScoreService.getScoreForUser(username);
         return ResponseEntity.ok(response);
     }
 }

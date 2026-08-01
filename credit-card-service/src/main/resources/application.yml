@@ -7,7 +7,7 @@ spring:
   datasource:
     # ASSUMPTION: separate schema/database per service (recommended for microservices).
     # Point this at its own DB, not the banking-service one.
-    url: jdbc:postgresql://localhost:5432/credit_card_service_db
+    url: jdbc:postgresql://localhost:5432/credit_card_db
     username: postgres
     password: postgres
   jpa:

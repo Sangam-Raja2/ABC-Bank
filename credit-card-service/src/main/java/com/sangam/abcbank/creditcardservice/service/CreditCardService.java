@@ -1,9 +1,11 @@
 package com.sangam.abcbank.creditcardservice.service;
 
+import com.sangam.abcbank.common.util.MockCibilBureauClient;
 import com.sangam.abcbank.creditcardservice.dto.CreditCardIssueResponse;
 import com.sangam.abcbank.creditcardservice.dto.CreditCardResponse;
 import com.sangam.abcbank.creditcardservice.dto.IssueCreditCardRequest;
 import com.sangam.abcbank.creditcardservice.exception.DuplicateCardException;
+import com.sangam.abcbank.creditcardservice.exception.InsufficientCibilScoreException;
 import com.sangam.abcbank.creditcardservice.exception.ResourceNotFoundException;
 import com.sangam.abcbank.creditcardservice.model.CardStatus;
 import com.sangam.abcbank.creditcardservice.model.CreditCard;
@@ -22,15 +24,19 @@ import java.util.List;
 public class CreditCardService {
 
     private static final int VALIDITY_YEARS = 5;
+    private static final int MIN_CIBIL_SCORE_REQUIRED = 650;
     // ASSUMPTION: replace with your real BIN prefix for credit cards
     private static final String BIN_PREFIX = "5241";
 
     private final CreditCardRepository creditCardRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MockCibilBureauClient mockCibilBureauClient;
 
-    public CreditCardService(CreditCardRepository creditCardRepository, PasswordEncoder passwordEncoder) {
+    public CreditCardService(CreditCardRepository creditCardRepository, PasswordEncoder passwordEncoder
+    , MockCibilBureauClient mockCibilBureauClient) {
         this.creditCardRepository = creditCardRepository;
         this.passwordEncoder = passwordEncoder;
+        this.mockCibilBureauClient = mockCibilBureauClient;
     }
 
     @Transactional
@@ -44,6 +50,15 @@ public class CreditCardService {
             throw new DuplicateCardException(
                     "An active credit card already exists for user: " + username);
         }
+
+        int cibilScore = mockCibilBureauClient.fetchScore(username).score();
+
+        if (cibilScore < MIN_CIBIL_SCORE_REQUIRED) {
+            throw new InsufficientCibilScoreException(
+                    "CIBIL score " + cibilScore + " is below the minimum required "
+                            + MIN_CIBIL_SCORE_REQUIRED + " for user: " + username);
+        }
+
 
         String cardNumber = generateCardNumber();
         String rawCvv = generateCvv();
