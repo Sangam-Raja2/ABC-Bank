@@ -1,23 +1,32 @@
-package com.sangam.abcbank.bankingservice.config;
+package com.sangam.abcbank.creditcardservice.config;
 
 import com.sangam.abcbank.common.config.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
+/**
+ * Stateless resource-server style security: trusts JWTs issued by user-service.
+ * ASSUMPTION: JwtAuthenticationFilter (in common-security, already used by banking-service)
+ * validates the token signature/claims locally and populates a CommonUser principal —
+ * no live call back to user-service per request. If your setup instead calls user-service
+ * to introspect/validate every token, swap this filter for a WebClient-based one.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -37,12 +46,12 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
-                                "/h2-console/**"
-                        ).permitAll()
+                                "/h2-console/**").permitAll()
                         .requestMatchers("/actuator/health", "/actuator/info").permitAll()
-                        .requestMatchers("/api/accounts/**", "/api/transactions/**")
-                        .hasAnyRole("ADMIN", "CUSTOMER")
+                        .requestMatchers("/api/credit-cards/**")
+                        .hasAnyRole("ADMIN", "CUSTOMER","LOAN_OFFICER","MANAGER")
                         .anyRequest().authenticated()
+
                 )
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -65,5 +74,10 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 }

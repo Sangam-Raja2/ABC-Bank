@@ -1,5 +1,7 @@
 server:
   port: 8082
+  error:
+    include-stacktrace: always
 
 spring:
   application:
@@ -41,8 +43,13 @@ jwt:
   secret: ${JWT_SECRET:abcBank$ecretKeyForJWTSigning_MustBeAtLeast256BitsLong_ChangeInProd}
   expiration-ms: ${JWT_EXPIRATION_MS:3600000}
 
+
+
+
 logging:
   level:
+    org.springframework.web: DEBUG
+    org.hibernate: DEBUG
     com.sangam.abcbank: INFO
 
 springdoc:

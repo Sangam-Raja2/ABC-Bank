@@ -32,6 +32,7 @@
         <module>banking-service</module>
         <module>loan-service</module>
         <module>common-security</module>
+        <module>credit-card-service</module>
     </modules>
 
     <dependencyManagement>

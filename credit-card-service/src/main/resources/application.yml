@@ -1,0 +1,23 @@
+server:
+  port: 8083   # banking-service uses 8082 — pick a free port for this service
+
+spring:
+  application:
+    name: credit-card-service
+  datasource:
+    # ASSUMPTION: separate schema/database per service (recommended for microservices).
+    # Point this at its own DB, not the banking-service one.
+    url: jdbc:postgresql://localhost:5432/credit_card_service_db
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update   # use validate/none once you have real migrations (Flyway/Liquibase)
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    com.sangam.abcbank.creditcardservice: DEBUG
