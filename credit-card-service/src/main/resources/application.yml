@@ -1,5 +1,5 @@
 server:
-  port: 8083   # banking-service uses 8082 — pick a free port for this service
+  port: 8084  # banking-service uses 8082 — pick a free port for this service
 
 spring:
   application:

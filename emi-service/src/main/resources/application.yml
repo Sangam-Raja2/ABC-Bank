@@ -1,0 +1,43 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: emi-service
+  datasource:
+    url: jdbc:h2:mem:emidb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    database-platform: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+# Must be identical to user-service / banking-service / loan-service so JWTs issued by
+# user-service validate here too (stateless JWT validation, no callback needed).
+jwt:
+  secret: ${JWT_SECRET:ThisIsASampleSecretKeyForJWTsPleaseReplaceInProdEnvironment123!}
+  expiration-ms: 3600000
+
+# Downstream service base URLs (override via env vars in docker-compose / k8s)
+services:
+  credit-card-service:
+    base-url: ${CREDIT_CARD_SERVICE_URL:http://localhost:8085}
+  loan-service:
+    base-url: ${LOAN_SERVICE_URL:http://localhost:8083}
+  cibil:
+    # Real bureau integration (e.g. TransUnion CIBIL API) goes here. Left as a mock
+    # provider until real bureau credentials/consent-flow are wired in - see CibilService.
+    provider: mock
+    base-url: ${CIBIL_API_URL:}
+    api-key: ${CIBIL_API_KEY:}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui/index.html

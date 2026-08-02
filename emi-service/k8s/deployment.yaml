@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: emi-service
+  namespace: abcbank
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: emi-service
+  template:
+    metadata:
+      labels:
+        app: emi-service
+    spec:
+      containers:
+        - name: emi-service
+          image: abcbank/emi-service:1.0.0
+          ports:
+            - containerPort: 8084
+          env:
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: abcbank-secrets
+                  key: jwt-secret
+            - name: CREDIT_CARD_SERVICE_URL
+              value: "http://credit-card-service:8085"
+            - name: LOAN_SERVICE_URL
+              value: "http://loan-service:8083"
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
